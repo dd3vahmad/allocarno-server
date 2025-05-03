@@ -1,3 +1,6 @@
+import { IUser } from "../models/User";
+import { Request } from "express";
+
 export interface ICourse {
   name: string;
   code: number;
@@ -27,4 +30,8 @@ export interface IAiResponse {
   timetable: ICourseSchedule[];
   unscheduled_courses: IUnscheduledCourse[];
   hash: string;
+}
+
+export interface IRequestWithUser extends Request {
+  user: IUser;
 }

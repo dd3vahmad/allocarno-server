@@ -11,7 +11,6 @@ export const createTimetable = async (
 ) => {
   try {
     const { courses } = req.body as { courses: ICourseInput[] };
-    console.log("Courses: ", courses);
 
     if (!courses.length) {
       _res.error(400, res, "Invalid request argument, courses is required.");

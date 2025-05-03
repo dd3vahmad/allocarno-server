@@ -19,7 +19,7 @@ export const createTimetable = async (
 
     const { availableTimes, availableHalls } =
       await getAvailableHallsAndTimes();
-      
+
     const { timetable, hash, unscheduled } = await generateSchedule(
       schedules,
       availableTimes,
@@ -33,8 +33,8 @@ export const createTimetable = async (
     }
 
     const newTimetable = await Timetable.create({
-      timetable,
-      unscheduled,
+      schedules,
+      unscheduled_courses: unscheduled,
       hash,
     });
 

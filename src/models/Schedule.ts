@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { ITimeSlot } from "./Hall";
 
 const ScheduleSchema = new mongoose.Schema({
   student_group: {
@@ -30,4 +29,6 @@ ScheduleSchema.index(
   { unique: true }
 );
 
-module.exports = mongoose.model("Schedule", ScheduleSchema);
+const Schedule = mongoose.model("Schedule", ScheduleSchema);
+
+export default Schedule;

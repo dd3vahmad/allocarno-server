@@ -6,7 +6,7 @@ export interface ICourse {
   code: number;
 }
 
-export interface ICourseInput {
+export interface ISchedule {
   code: string;
   lecturer: string;
   student_group: string;
@@ -29,6 +29,7 @@ interface IUnscheduledCourse extends ICourse {
 export interface IAiResponse {
   timetable: ICourseSchedule[];
   unscheduled_courses: IUnscheduledCourse[];
+  unscheduled?: IUnscheduledCourse[];
   hash: string;
 }
 

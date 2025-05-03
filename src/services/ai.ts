@@ -1,10 +1,10 @@
 import axios from "axios";
-import { IAiResponse, ICourseInput } from "../lib/interface";
+import { IAiResponse, ISchedule } from "../lib/interface";
 
 const AI_URI = process.env.AI_URI;
 
 export const generateSchedule = async (
-  courses: ICourseInput[],
+  courses: ISchedule[],
   availableTimes: string[],
   availableHalls: string[]
 ): Promise<IAiResponse> => {
@@ -14,5 +14,5 @@ export const generateSchedule = async (
     available_halls: availableHalls,
   });
 
-  return response.data;
+  return { ...response.data, unscheduled: response.data.unscheduled_courses };
 };

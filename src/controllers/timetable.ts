@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { generateSchedule } from "../services/ai";
 import Timetable from "../models/Timetable";
 import { _res } from "../lib/utils";
-import { ICourseInput } from "../lib/interface";
-import DraftScheduledCourse from "../models/DraftScheduleCourse";
+import { ISchedule } from "../lib/interface";
+import DraftScheduledCourse from "../models/DraftSchedule";
 
 export const createTimetable = async (
   req: Request,
@@ -11,14 +11,14 @@ export const createTimetable = async (
   next: NextFunction
 ) => {
   try {
-    const { courses } = req.body as { courses: ICourseInput[] };
+    const { schedules } = req.body as { schedules: ISchedule[] };
 
-    if (!courses.length) {
-      _res.error(400, res, "Invalid request argument, courses is required.");
+    if (!schedules.length) {
+      _res.error(400, res, "Invalid request argument, schedules is required.");
     }
 
-    const { timetable, hash, unscheduled_courses } = await generateSchedule(
-      courses,
+    const { timetable, hash, unscheduled } = await generateSchedule(
+      schedules,
       [],
       []
     );
@@ -31,7 +31,7 @@ export const createTimetable = async (
 
     const newTimetable = await Timetable.create({
       timetable,
-      unscheduled_courses,
+      unscheduled,
       hash,
     });
 
@@ -47,7 +47,7 @@ export const draftTimetable = async (
   next: NextFunction
 ) => {
   try {
-    const { courses } = req.body as { courses: ICourseInput[] };
+    const { courses } = req.body as { courses: ISchedule[] };
 
     if (!courses.length) {
       _res.error(400, res, "Invalid request argument, courses is required.");

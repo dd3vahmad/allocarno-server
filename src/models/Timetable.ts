@@ -1,49 +1,40 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
-interface ScheduledCourse {
+interface IUnscheduledCourse {
   course_code: string;
-  lecturer: string;
-  student_group: string;
-  time: string;
-  hall: string;
-}
-
-interface UnscheduledCourse {
-  course_code: string;
-  lecturer: string;
-  student_group: string;
+  instructor: Types.ObjectId;
+  student_group: Types.ObjectId;
 }
 
 export interface ITimetable extends Document {
-  timetable: ScheduledCourse[];
-  unscheduled_courses: UnscheduledCourse[];
+  schedules: Types.ObjectId[];
+  unscheduled_courses: IUnscheduledCourse[];
   hash: string;
   createdAt?: Date;
 }
 
-const ScheduledCourseSchema = new Schema<ScheduledCourse>(
+const UnscheduledCourseSchema = new Schema<IUnscheduledCourse>(
   {
     course_code: { type: String, required: true },
-    lecturer: { type: String, required: true },
-    student_group: { type: String, required: true },
-    time: { type: String, required: true },
-    hall: { type: String, required: true },
-  },
-  { _id: false }
-);
-
-const UnscheduledCourseSchema = new Schema<UnscheduledCourse>(
-  {
-    course_code: { type: String, required: true },
-    lecturer: { type: String, required: true },
-    student_group: { type: String, required: true },
+    instructor: {
+      type: Schema.Types.ObjectId,
+      ref: "Lecturer",
+      required: true,
+    },
+    student_group: {
+      type: Schema.Types.ObjectId,
+      ref: "StudentGroup",
+      required: true,
+    },
   },
   { _id: false }
 );
 
 const TimetableSchema = new Schema<ITimetable>(
   {
-    timetable: { type: [ScheduledCourseSchema], required: true },
+    schedules: [
+      { type: Schema.Types.ObjectId, ref: "Schedule", required: true },
+    ],
     unscheduled_courses: { type: [UnscheduledCourseSchema], required: true },
     hash: { type: String, required: true, unique: true },
   },
@@ -51,5 +42,4 @@ const TimetableSchema = new Schema<ITimetable>(
 );
 
 const Timetable = mongoose.model<ITimetable>("Timetable", TimetableSchema);
-
 export default Timetable;

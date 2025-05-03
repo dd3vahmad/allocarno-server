@@ -5,32 +5,32 @@ use cardano/governance.{ProposalProcedure, Voter}
 use cardano/transaction.{Transaction, OutputReference}
 
 validator placeholder {
-  mint(_redeemer: Data, _policy_id: PolicyId, _self: Transaction) {
+  mint(_redeemer: Data, _policy_id: PolicyId, _self: Transaction) -> Bool {
     // todo @"mint logic goes here"
     true
   }
 
-  spend(_datum: Option<Data>, _redeemer: Data, _utxo: OutputReference, _self: Transaction) {
+  spend(_datum: Option<Data>, _redeemer: Data, _utxo: OutputReference, _self: Transaction) -> Bool {
     // todo @"spend logic goes here"
     true
   }
 
-  withdraw(_redeemer: Data, _account: Credential, _self: Transaction) {
+  withdraw(_redeemer: Data, _account: Credential, _self: Transaction) -> Bool {
     // todo @"withdraw logic goes here"
     true
   }
 
-  publish(_redeemer: Data, _certificate: Certificate, _self: Transaction) {
+  publish(_redeemer: Data, _certificate: Certificate, _self: Transaction) -> Bool {
     // todo @"publish logic goes here"
     true
   }
 
-  vote(_redeemer: Data, _voter: Voter, _self: Transaction) {
+  vote(_redeemer: Data, _voter: Voter, _self: Transaction) -> Bool {
     // todo @"vote logic goes here"
     true
   }
 
-  propose(_redeemer: Data, _proposal: ProposalProcedure, _self: Transaction) {
+  propose(_redeemer: Data, _proposal: ProposalProcedure, _self: Transaction) -> Bool {
     // todo @"propose logic goes here"
     true
   }

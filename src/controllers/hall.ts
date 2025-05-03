@@ -36,13 +36,13 @@ export const addHall = async (
   next: NextFunction
 ) => {
   try {
-    const { name, shortName } = req.body;
+    const { name, shortName, timeSlots } = req.body;
 
-    if (!name || !shortName) {
+    if (!name || !shortName || !timeSlots.length) {
       _res.error(
         400,
         res,
-        "Invalid data input - Hall name and shortName fields are required"
+        "Invalid data input - Hall name, timeSlots and shortName fields are required"
       );
       return;
     }
@@ -54,7 +54,7 @@ export const addHall = async (
       return;
     }
 
-    const newHall = await Hall.create({ name, shortName });
+    const newHall = await Hall.create({ name, shortName, timeSlots });
 
     if (!newHall) {
       _res.error(400, res, "Error creating hall");

@@ -2,8 +2,9 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { protectedRoutes } from "./routes";
+import { authRoutes, protectedRoutes } from "./routes";
 import path from "path";
+import { authenticate } from "./middleware/authenticate";
 
 dotenv.config();
 
@@ -15,8 +16,7 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
-// app.use("/api/auth", authRoutes);
-// app.use("/api/v1/", authenticate, protectedRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/v1/", protectedRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

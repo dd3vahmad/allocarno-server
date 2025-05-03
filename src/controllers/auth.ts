@@ -47,21 +47,16 @@ export const signup = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, password, username } = req.body;
+  const { email, password, firstName, lastName } = req.body;
 
   try {
-    const existingUsername = await User.findOne({ username });
     const existingUserEmail = await User.findOne({ email });
 
-    if (existingUsername) {
-      _res.error(400, res, "Username is already in use");
-      return;
-    }
     if (existingUserEmail) {
       _res.error(400, res, "Email has already been used");
       return;
     }
-    const user = await User.create({ email, password, username });
+    const user = await User.create({ email, password, firstName, lastName });
 
     attachJWT(user, res);
 
@@ -82,11 +77,9 @@ export const signin = async (
   next: NextFunction
 ) => {
   try {
-    const { identifier, password } = req.body; // identifier => email/username
+    const { email, password } = req.body;
 
-    const validUser = await User.findOne({
-      $or: [{ username: identifier }, { email: identifier }],
-    });
+    const validUser = await User.findOne({ email });
 
     if (!validUser) {
       _res.error(400, res, "Invalid credentials");

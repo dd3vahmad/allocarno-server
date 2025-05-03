@@ -18,6 +18,7 @@ app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/v1/", protectedRoutes);
+// app.use("/api/v1/", authenticate, protectedRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   const statusCode = 500;

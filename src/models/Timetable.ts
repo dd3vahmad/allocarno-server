@@ -50,4 +50,6 @@ const TimetableSchema = new Schema<ITimetable>(
   { timestamps: true }
 );
 
-export default mongoose.model<ITimetable>("Timetable", TimetableSchema);
+const Timetable = mongoose.model<ITimetable>("Timetable", TimetableSchema);
+
+export default Timetable;

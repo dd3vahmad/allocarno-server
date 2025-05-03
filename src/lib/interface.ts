@@ -6,18 +6,17 @@ export interface ICourse {
   code: number;
 }
 
-export interface ISchedule {
-  code: string;
+export interface IScheduleInput {
+  course_code: string;
   lecturer: string;
   student_group: string;
 }
 
-export interface ICourseSchedule {
+export interface IAiSchedule {
   course_code: string;
   lecturer: string;
-  start_time: string;
-  end_time: string;
-  day_of_week: string;
+  student_group: string;
+  time: string;
   hall: string;
 }
 
@@ -27,7 +26,7 @@ interface IUnscheduledCourse extends ICourse {
 }
 
 export interface IAiResponse {
-  timetable: ICourseSchedule[];
+  timetable: IAiSchedule[];
   unscheduled_courses: IUnscheduledCourse[];
   unscheduled?: IUnscheduledCourse[];
   hash: string;

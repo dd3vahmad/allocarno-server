@@ -1,5 +1,91 @@
 import { Response } from "express";
 import Hall from "../models/Hall";
+import StudentGroup from "../models/StudentGroup";
+import Lecturer from "../models/Lecturer";
+import Schedule from "../models/Schedule";
+import { IAiSchedule } from "./interface";
+
+interface ISchedule extends IAiSchedule {
+  day?: string;
+}
+
+export const saveAiSchedules = async (aiSchedules: ISchedule[]) => {
+  const savedSchedules = [];
+
+  for (const sched of aiSchedules) {
+    const { course_code, lecturer, student_group, time, hall } = sched;
+
+    if (!course_code || !lecturer || !student_group || !time || !hall) {
+      console.warn("Skipping invalid schedule (missing field):", sched);
+      continue;
+    }
+
+    const [foundGroup, foundLecturer, foundHall] = await Promise.all([
+      StudentGroup.findOne({ shortName: student_group }),
+      Lecturer.findOne({ name: lecturer }),
+      Hall.findOne({ shortName: hall }),
+    ]);
+
+    if (!foundGroup || !foundLecturer || !foundHall) {
+      console.warn("Skipping due to missing references:", sched);
+      continue;
+    }
+
+    const [startTime, endTime] = time.split("-");
+
+    // Find the exact timeSlot
+    const days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const day = days[new Date().getDay()];
+    const timeSlotIndex = foundHall.timeSlots.findIndex(
+      (slot) =>
+        slot.day === day &&
+        slot.startTime === startTime &&
+        slot.endTime === endTime
+    );
+
+    if (timeSlotIndex === -1) {
+      console.warn(`No matching time slot found in hall '${hall}' for`, sched);
+      continue;
+    }
+
+    // Mark that timeSlot as booked
+    foundHall.timeSlots[timeSlotIndex].isBooked = true;
+
+    // Check if ALL time slots are now booked
+    const allBooked = foundHall.timeSlots.every((slot) => slot.isBooked);
+    if (allBooked) {
+      foundHall.isActive = false;
+    }
+
+    await foundHall.save();
+
+    const scheduleDoc = {
+      course_code,
+      student_group: foundGroup._id,
+      lecturer: foundLecturer._id,
+      hall: foundHall._id,
+      time_slot: {
+        day,
+        startTime,
+        endTime,
+        isBooked: true,
+      },
+    };
+
+    const newSchedule = await Schedule.create(scheduleDoc);
+    savedSchedules.push(newSchedule._id);
+  }
+
+  return savedSchedules;
+};
 
 export const getAvailableHallsAndTimes = async (): Promise<{
   availableTimes: string[];

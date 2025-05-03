@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { generateSchedule } from "../services/ai";
 import Timetable from "../models/Timetable";
-import { _res, getAvailableHallsAndTimes } from "../lib/utils";
-import { ISchedule } from "../lib/interface";
+import { _res, getAvailableHallsAndTimes, saveAiSchedules } from "../lib/utils";
+import { IScheduleInput } from "../lib/interface";
 import DraftScheduledCourse from "../models/DraftSchedule";
 
 export const createTimetable = async (
@@ -11,10 +11,30 @@ export const createTimetable = async (
   next: NextFunction
 ) => {
   try {
-    const { schedules } = req.body as { schedules: ISchedule[] };
+    const { schedules } = req.body as { schedules: IScheduleInput[] };
 
-    if (!schedules.length) {
+    // Check if schedules is provided and not empty
+    if (!Array.isArray(schedules) || schedules.length === 0) {
       _res.error(400, res, "Invalid request argument, schedules is required.");
+      return;
+    }
+
+    // Check if every object has the required fields
+    const hasRequiredFields = schedules.every(
+      (s) =>
+        s &&
+        typeof s.course_code === "string" &&
+        typeof s.lecturer === "string" &&
+        typeof s.student_group === "string"
+    );
+
+    if (!hasRequiredFields) {
+      _res.error(
+        400,
+        res,
+        "Each schedule must include course_code, lecturer, and student_group."
+      );
+      return;
     }
 
     const { availableTimes, availableHalls } =
@@ -26,14 +46,10 @@ export const createTimetable = async (
       availableHalls
     );
 
-    const existing = await Timetable.findOne({ hash });
-    if (existing) {
-      _res.error(400, res, "Timetable with this hash already exists");
-      return;
-    }
+    const savedSchedules = await saveAiSchedules(timetable);
 
     const newTimetable = await Timetable.create({
-      schedules,
+      schedules: savedSchedules,
       unscheduled_courses: unscheduled,
       hash,
     });
@@ -50,13 +66,13 @@ export const draftTimetable = async (
   next: NextFunction
 ) => {
   try {
-    const { courses } = req.body as { courses: ISchedule[] };
+    const { courses } = req.body as { courses: IScheduleInput[] };
 
     if (!courses.length) {
       _res.error(400, res, "Invalid request argument, courses is required.");
     }
 
-    const { timetable, hash, unscheduled_courses } = await generateSchedule(
+    const { timetable, hash, unscheduled } = await generateSchedule(
       courses,
       [],
       []

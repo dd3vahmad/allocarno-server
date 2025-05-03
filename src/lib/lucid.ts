@@ -16,8 +16,7 @@ export async function initLucid() {
   );
 
   // Load wallet from private key or seed
-  const privateKey = fs.readFileSync("wallet.sk", "utf8"); // Exported signing key
-  lucid.selectWalletFromPrivateKey(privateKey);
+  lucid.selectWalletFromPrivateKey(process.env.PRIVATE_KEY!);
 
   return lucid;
 }

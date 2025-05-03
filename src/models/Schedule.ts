@@ -1,12 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
 const ScheduleSchema = new mongoose.Schema({
+  course_code: {
+    type: String,
+    required: true,
+  },
   student_group: {
     type: Schema.Types.ObjectId,
     ref: "StudentGroup",
     required: true,
   },
-  instructor: {
+  lecturer: {
     type: Schema.Types.ObjectId,
     ref: "Lecturer",
     required: true,
@@ -16,18 +20,8 @@ const ScheduleSchema = new mongoose.Schema({
     ref: "Hall",
     required: true,
   },
-  timeSlot: { type: Object },
+  time_slot: { type: Object },
 });
-
-ScheduleSchema.index(
-  {
-    hall: 1,
-    "timeSlots.day": 1,
-    "timeSlots.startTime": 1,
-    "timeSlots.endTime": 1,
-  },
-  { unique: true }
-);
 
 const Schedule = mongoose.model("Schedule", ScheduleSchema);
 

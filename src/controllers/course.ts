@@ -24,7 +24,12 @@ export const addCourse = async (
   next: NextFunction
 ) => {
   try {
-    const { course_code, name, student_group_id, instructor_id } = req.body;
+    const { course_code, name } = req.body;
+
+    if (!course_code || !name) {
+      _res.error(400, res, "Course code and name are required");
+      return;
+    }
 
     const existingCourseWithCode = await Course.findOne({ code: course_code });
     if (existingCourseWithCode) {
@@ -32,25 +37,12 @@ export const addCourse = async (
       return;
     }
 
-    const validStudentGroup = await StudentGroup.findById(student_group_id);
-    if (!validStudentGroup) {
-      _res.error(400, res, "Student group Id is invalid");
-      return;
-    }
-
-    const validInstructor = await Lecturer.findById(instructor_id);
-    if (!validInstructor) {
-      _res.error(400, res, "Instructor Id is invalid");
-      return;
-    }
-
     const newCourse = await Course.create({
       name,
       code: course_code,
-      instructor: instructor_id,
     });
 
-    _res.success(201, res, "Course created successfully");
+    _res.success(201, res, "Course created successfully", newCourse);
   } catch (error) {
     next(error);
   }

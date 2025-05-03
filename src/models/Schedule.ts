@@ -1,60 +1,23 @@
 import mongoose, { Schema } from "mongoose";
-
-export interface ITimeSlot extends Document {
-  day:
-    | "Monday"
-    | "Tuesday"
-    | "Wednesday"
-    | "Thursday"
-    | "Friday"
-    | "Saturday"
-    | "Sunday";
-  startTime: string;
-  endTime: string;
-  isBooked: boolean;
-  course: Schema.Types.ObjectId;
-}
-
-const timeSlotSchema = new Schema<ITimeSlot>({
-  day: {
-    type: String,
-    enum: [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ],
-    required: true,
-  },
-  startTime: {
-    type: String, // Format: "HH:MM" in 24-hour format
-    required: true,
-  },
-  endTime: {
-    type: String, // Format: "HH:MM" in 24-hour format
-    required: true,
-  },
-  isBooked: {
-    type: Boolean,
-    default: false,
-  },
-  course: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Course",
-    default: null,
-  },
-});
+import { ITimeSlot } from "./Hall";
 
 const ScheduleSchema = new mongoose.Schema({
+  student_group: {
+    type: Schema.Types.ObjectId,
+    ref: "StudentGroup",
+    required: true,
+  },
+  instructor: {
+    type: Schema.Types.ObjectId,
+    ref: "Lecturer",
+    required: true,
+  },
   hall: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "Hall",
     required: true,
   },
-  timeSlots: [timeSlotSchema],
+  timeSlot: { type: Object },
 });
 
 ScheduleSchema.index(

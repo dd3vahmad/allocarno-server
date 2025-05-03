@@ -16,6 +16,20 @@ export const getHalls = async (
   }
 };
 
+export const getActiveHalls = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const halls = await Hall.find({ isActive: true });
+
+    _res.success(200, res, "Halls fetched successfully", halls);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const addHall = async (
   req: Request,
   res: Response,

@@ -3,18 +3,24 @@ export interface ICourse {
   code: number;
 }
 
-export interface ICourseSchedule {
-  courseCode: string;
+export interface ICourseInput {
+  code: string;
   lecturer: string;
-  startTime: string;
-  endTime: string;
-  dayOfWeek: string;
+  student_group: string;
+}
+
+export interface ICourseSchedule {
+  course_code: string;
+  lecturer: string;
+  start_time: string;
+  end_time: string;
+  day_of_week: string;
   hall: string;
 }
 
 interface IUnscheduledCourse extends ICourse {
   lecturer: string;
-  studentGroup: string;
+  student_group: string;
 }
 
 export interface IAiResponse {

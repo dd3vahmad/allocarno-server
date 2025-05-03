@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { generateSchedule } from "../services/ai";
 import Timetable from "../models/Timetable";
 import { _res } from "../lib/utils";
+import { ICourseInput } from "../lib/interface";
 
 export const createTimetable = async (
   req: Request,
@@ -9,7 +10,13 @@ export const createTimetable = async (
   next: NextFunction
 ) => {
   try {
-    const { courses } = req.body;
+    const { courses } = req.body as { courses: ICourseInput[] };
+    console.log("Courses: ", courses);
+
+    if (!courses.length) {
+      _res.error(400, res, "Invalid request argument, courses is required.");
+    }
+
     const { timetable, hash, unscheduled_courses } = await generateSchedule(
       courses,
       [],

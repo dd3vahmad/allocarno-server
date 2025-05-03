@@ -1,10 +1,10 @@
 import axios from "axios";
-import { IAiResponse, ICourse } from "../lib/interface";
+import { IAiResponse, ICourseInput } from "../lib/interface";
 
 const AI_URI = process.env.AI_URI;
 
 export const generateSchedule = async (
-  courses: ICourse[],
+  courses: ICourseInput[],
   availableTimes: string[],
   availableHalls: string[]
 ): Promise<IAiResponse> => {

@@ -1,0 +1,14 @@
+{
+  "preamble": {
+    "title": "local/store_hash",
+    "description": "Smart contract to store a hash",
+    "version": "0.0.1",
+    "plutusVersion": "v3",
+    "compiler": {
+      "name": "Aiken",
+      "version": "v1.1.16+unknown"
+    },
+    "license": "MIT"
+  },
+  "validators": []
+}

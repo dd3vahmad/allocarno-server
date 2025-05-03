@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { generateSchedule } from "../services/ai";
 import Timetable from "../models/Timetable";
-import { _res } from "../lib/utils";
+import { _res, getAvailableHallsAndTimes } from "../lib/utils";
 import { ISchedule } from "../lib/interface";
 import DraftScheduledCourse from "../models/DraftSchedule";
 
@@ -17,10 +17,13 @@ export const createTimetable = async (
       _res.error(400, res, "Invalid request argument, schedules is required.");
     }
 
+    const { availableTimes, availableHalls } =
+      await getAvailableHallsAndTimes();
+      
     const { timetable, hash, unscheduled } = await generateSchedule(
       schedules,
-      [],
-      []
+      availableTimes,
+      availableHalls
     );
 
     const existing = await Timetable.findOne({ hash });

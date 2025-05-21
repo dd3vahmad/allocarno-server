@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { authRoutes, protectedRoutes } from "./routes";
 import path from "path";
 import { authenticate } from "./middleware/authenticate";
+import { getCurrentUser } from "./controllers/auth";
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
 app.use("/api/auth", authRoutes);
-// app.use("/api/v1/", protectedRoutes);
+app.get("/api/user", authenticate, getCurrentUser);
 app.use("/api/v1/", authenticate, protectedRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

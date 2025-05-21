@@ -24,14 +24,13 @@ export const authenticate = async (
     }
 
     const decoded = jwt.verify(token, secret);
-    const user = await User.findById((decoded as any).id);
 
-    if (!user) {
+    if (!decoded) {
       _res.error(401, res, "Unauthenticated - User not found.");
       return;
     }
 
-    (req as IRequestWithUser).user = user;
+    (req as IRequestWithUser).user = decoded as any;
     return next();
   } catch (error) {
     next(error);

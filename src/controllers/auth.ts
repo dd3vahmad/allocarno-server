@@ -15,27 +15,27 @@ const attachJWT = (user: IUser, res: Response) => {
 };
 
 export const getCurrentUser = async (
-  req: IRequestWithUser,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    if (!req.user) {
+    const request = req as IRequestWithUser;
+    if (!request.user) {
       _res.error(401, res, "You're not authenticated");
       return;
     }
-    const validUser = await User.findById(req.user.id);
+    const validUser = await User.findById(request.user.id);
 
     if (!validUser) {
       _res.error(404, res, "User not found");
       return;
     }
-
     _res.success(
       200,
       res,
       "User profile fetched successfully",
-      validUser.getPublicProfile()
+      await validUser.getPublicProfile()
     );
   } catch (error) {
     next(error);
@@ -67,7 +67,12 @@ export const signup = async (
 
     attachJWT(user, res);
 
-    _res.success(201, res, "Registration successful", user.getPublicProfile());
+    _res.success(
+      201,
+      res,
+      "Registration successful",
+      await user.getPublicProfile()
+    );
   } catch (error: any) {
     next(error);
   }

@@ -176,9 +176,19 @@ userSchema.methods.generateAuthToken = function (): string {
     throw new Error("JWT_SECRET environment variable is not set");
   }
 
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: JWT_EXPIRATION,
-  });
+  return jwt.sign(
+    {
+      id: this._id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      role: this.role,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: JWT_EXPIRATION,
+    }
+  );
 };
 
 /**

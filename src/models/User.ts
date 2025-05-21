@@ -32,9 +32,7 @@ export interface IUser extends Document {
 
   // Methods
   comparePassword(candidatePassword: string): Promise<boolean>;
-  getPublicProfile(
-    requestingUserId?: string
-  ): Promise<Partial<IUser> & { name?: string }>;
+  getPublicProfile(): Promise<Partial<IUser> & { name?: string }>;
   generateAuthToken(): string;
   resetPassword(newPassword: string): Promise<void>;
 }
@@ -211,6 +209,28 @@ userSchema.methods.resetPassword = async function (
 ): Promise<void> {
   this.password = newPassword;
   await this.save();
+};
+
+/**
+ * Get public profile for the user
+ */
+userSchema.methods.getPublicProfile = async function (): Promise<
+  Partial<IUser> & { name?: string }
+> {
+  return {
+    id: this._id,
+    email: this.email,
+    firstName: this.firstName,
+    lastName: this.lastName,
+    name: `${this.firstName} ${this.lastName}`,
+    imageUrl: this.imageUrl,
+    gender: this.gender,
+    role: this.role,
+    emailVerified: this.emailVerified,
+    lastSignInAt: this.lastSignInAt,
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt,
+  };
 };
 
 const User = mongoose.model<IUser>("User", userSchema);

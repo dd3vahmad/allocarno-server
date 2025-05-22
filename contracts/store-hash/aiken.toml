@@ -1,5 +1,0 @@
-name = "local/store_hash"
-version = "0.0.1"
-description = "Smart contract to store a hash"
-license = "MIT"
-entrypoint = "store_hash.ak"

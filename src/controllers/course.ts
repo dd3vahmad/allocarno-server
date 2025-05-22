@@ -1,8 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import Course from "../models/Course";
 import { _res } from "../lib/utils";
-import StudentGroup from "../models/StudentGroup";
-import Lecturer from "../models/Lecturer";
 
 export const getCourses = async (
   req: Request,
@@ -11,8 +9,13 @@ export const getCourses = async (
 ) => {
   try {
     const courses = await Course.find({});
+    const formattedCourses = courses.map(({ _id, name, code }) => ({
+      id: _id,
+      name,
+      code,
+    }));
 
-    _res.success(200, res, "Courses fethced successfully", courses);
+    _res.success(200, res, "Courses fetched successfully", formattedCourses);
   } catch (error) {
     next(error);
   }

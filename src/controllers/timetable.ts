@@ -32,7 +32,7 @@ export const createTimetable = async (
       _res.error(
         400,
         res,
-        "Each schedule must include course_code, lecturer, and student_group."
+        "Each schedule must include course code, lecturer, and student group."
       );
       return;
     }

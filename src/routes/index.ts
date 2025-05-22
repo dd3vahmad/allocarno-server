@@ -10,7 +10,7 @@ const protectedRoutes = Router();
 
 protectedRoutes.use("/courses", coursesRoutes);
 protectedRoutes.use("/halls", hallsRoutes);
-protectedRoutes.use("/student-group", studentGroupRoutes);
+protectedRoutes.use("/student-groups", studentGroupRoutes);
 protectedRoutes.use("/lecturers", lecturersRoutes);
 protectedRoutes.use("/timetables", timetablesRoutes);
 

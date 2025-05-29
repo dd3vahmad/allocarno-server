@@ -10,6 +10,7 @@ export interface ITimetable extends Document {
   schedules: Types.ObjectId[];
   unscheduled_courses: IUnscheduledCourse[];
   hash: string;
+  schoolId: string;
   createdAt?: Date;
 }
 
@@ -37,6 +38,7 @@ const TimetableSchema = new Schema<ITimetable>(
     ],
     unscheduled_courses: { type: [UnscheduledCourseSchema], required: true },
     hash: { type: String, required: true, unique: true },
+    schoolId: { type: String, ref: "User", required: true },
   },
   { timestamps: true }
 );

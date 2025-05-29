@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { _res } from "../lib/utils";
 import Hall from "../models/Hall";
+import { IRequestWithUser } from "../lib/interface";
 
 export const getHalls = async (
   req: Request,
@@ -8,7 +9,9 @@ export const getHalls = async (
   next: NextFunction
 ) => {
   try {
-    const halls = await Hall.find({});
+    const halls = await Hall.find({
+      schoolId: (req as IRequestWithUser).user.schoolId,
+    });
 
     _res.success(200, res, "Halls fetched successfully", halls);
   } catch (error) {
@@ -22,7 +25,10 @@ export const getActiveHalls = async (
   next: NextFunction
 ) => {
   try {
-    const halls = await Hall.find({ isActive: true });
+    const halls = await Hall.find({
+      isActive: true,
+      schoolId: (req as IRequestWithUser).user.schoolId,
+    });
 
     _res.success(200, res, "Halls fetched successfully", halls);
   } catch (error) {
@@ -47,14 +53,22 @@ export const addHall = async (
       return;
     }
 
-    const existingHall = await Hall.findOne({ shortName });
+    const existingHall = await Hall.findOne({
+      shortName,
+      schoolId: (req as IRequestWithUser).user.schoolId,
+    });
 
     if (existingHall) {
       _res.error(400, res, "A hall with this name already exists");
       return;
     }
 
-    const newHall = await Hall.create({ name, shortName, timeSlots });
+    const newHall = await Hall.create({
+      name,
+      shortName,
+      timeSlots,
+      schoolId: (req as IRequestWithUser).user.schoolId,
+    });
 
     if (!newHall) {
       _res.error(400, res, "Error creating hall");

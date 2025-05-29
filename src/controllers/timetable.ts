@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { generateSchedule } from "../services/ai";
 import Timetable from "../models/Timetable";
 import { _res, getAvailableHallsAndTimes, saveAiSchedules } from "../lib/utils";
-import { IScheduleInput } from "../lib/interface";
+import { IRequestWithUser, IScheduleInput } from "../lib/interface";
 import DraftScheduledCourse from "../models/DraftSchedule";
 
 export const createTimetable = async (
@@ -52,6 +52,7 @@ export const createTimetable = async (
       schedules: savedSchedules,
       unscheduled_courses: unscheduled,
       hash,
+      schoolId: (req as IRequestWithUser).user.schoolId,
     });
 
     _res.success(201, res, "Timetable generated successfully", newTimetable);
@@ -84,7 +85,9 @@ export const draftTimetable = async (
       return;
     }
 
-    const newDraftScheduleCourses = await DraftScheduledCourse.create();
+    const newDraftScheduleCourses = await DraftScheduledCourse.create({
+      schoolId: (req as IRequestWithUser).user.schoolId,
+    });
 
     _res.success(
       201,
@@ -104,7 +107,10 @@ export const getTimetableByHash = async (
 ) => {
   try {
     const { hash } = req.params;
-    const timetable = await Timetable.findOne({ hash });
+    const timetable = await Timetable.findOne({
+      hash,
+      schoolId: (req as IRequestWithUser).user.schoolId,
+    });
 
     if (!timetable) {
       _res.error(404, res, "Timetable not found");

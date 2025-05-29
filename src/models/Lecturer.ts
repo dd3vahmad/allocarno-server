@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export interface ILecturer extends Document {
   name: string;
   password: string;
+  schoolId: string;
   email: string;
   gender: "male" | "female";
   rank?: "professor" | "doctor" | "lecturer";
@@ -11,6 +12,7 @@ export interface ILecturer extends Document {
 const lecturerSchema = new Schema<ILecturer>({
   name: { type: String, required: true },
   password: { type: String, required: true },
+  schoolId: { type: String, ref: "School", required: true },
   email: {
     type: String,
     required: [true, "Email is required"],

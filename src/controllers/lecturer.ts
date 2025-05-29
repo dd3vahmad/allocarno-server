@@ -10,7 +10,9 @@ export const getLecturers = async (
   next: NextFunction
 ) => {
   try {
-    const lecturers = await Lecturer.find({});
+    const lecturers = await Lecturer.find({
+      schoolId: (req as IRequestWithUser).user.schoolId,
+    });
 
     _res.success(200, res, "Lecturers fetched successfully", lecturers);
   } catch (error) {
@@ -19,7 +21,7 @@ export const getLecturers = async (
 };
 
 export const addLecturer = async (
-  req: IRequestWithUser,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -29,7 +31,7 @@ export const addLecturer = async (
     const names = n.split(" ");
     const firstName = names[0];
     const lastName = names[1];
-    const schoolId = req.user.schoolId;
+    const schoolId = (req as IRequestWithUser).user.schoolId;
 
     if (!name || !gender) {
       _res.error(
@@ -54,6 +56,7 @@ export const addLecturer = async (
       rank,
       email,
       password,
+      schoolId,
     });
     await User.create({
       firstName,

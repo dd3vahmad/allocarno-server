@@ -16,6 +16,7 @@ export interface ITimeSlot extends Document {
 
 export interface IHall extends Document {
   name: string;
+  schoolId: string;
   capacity: number;
   shortName: string;
   timeSlots: ITimeSlot[];
@@ -66,6 +67,7 @@ const timeSlotSchema = new Schema<ITimeSlot>({
 
 const hallSchema = new Schema<IHall>({
   name: { type: String, required: true },
+  schoolId: { type: String, ref: "School", required: true },
   shortName: {
     type: String,
     unique: true,

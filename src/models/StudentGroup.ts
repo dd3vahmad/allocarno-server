@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export interface IStudentGroup extends Document {
   name: string;
   shortName: string;
+  schoolId: string;
 }
 
 const studentGroupSchema = new Schema<IStudentGroup>({
@@ -12,6 +13,7 @@ const studentGroupSchema = new Schema<IStudentGroup>({
     unique: true,
     required: true,
   },
+  schoolId: { type: String, ref: "School", required: true },
 });
 
 const StudentGroup = mongoose.model<IStudentGroup>(

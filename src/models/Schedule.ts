@@ -21,6 +21,7 @@ const ScheduleSchema = new mongoose.Schema({
     required: true,
   },
   time_slot: { type: Object },
+  schoolId: { type: String, ref: "School", required: true },
 });
 
 const Schedule = mongoose.model("Schedule", ScheduleSchema);

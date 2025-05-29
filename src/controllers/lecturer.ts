@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { _res } from "../lib/utils";
 import Lecturer from "../models/Lecturer";
+import User from "../models/User";
+import { IRequestWithUser } from "../lib/interface";
 
 export const getLecturers = async (
   req: Request,
@@ -17,12 +19,17 @@ export const getLecturers = async (
 };
 
 export const addLecturer = async (
-  req: Request,
+  req: IRequestWithUser,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { name, gender, rank } = req.body;
+    const { name, gender, rank, email } = req.body;
+    const n = name as string;
+    const names = n.split(" ");
+    const firstName = names[0];
+    const lastName = names[1];
+    const schoolId = req.user.schoolId;
 
     if (!name || !gender) {
       _res.error(
@@ -33,14 +40,30 @@ export const addLecturer = async (
       return;
     }
 
-    const existingLecturer = await Lecturer.findOne({ name });
+    const existingLecturer = await Lecturer.findOne({ email });
 
     if (existingLecturer) {
       _res.error(400, res, "A lecturer with this name already exists");
       return;
     }
 
-    const newLecturer = await Lecturer.create({ name, gender, rank });
+    const password = new Date().getTime();
+    const newLecturer = await Lecturer.create({
+      name,
+      gender,
+      rank,
+      email,
+      password,
+    });
+    await User.create({
+      firstName,
+      lastName,
+      gender,
+      role: "lecturer",
+      password,
+      email,
+      schoolId,
+    });
 
     if (!newLecturer) {
       _res.error(400, res, "Error creating lecturer");

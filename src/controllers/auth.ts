@@ -89,7 +89,7 @@ export const signup = async (
       password,
       firstName,
       lastName,
-      role,
+      role: "admin",
       gender,
       schoolId: school._id,
     });

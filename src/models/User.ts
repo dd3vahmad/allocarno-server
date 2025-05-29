@@ -80,7 +80,7 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["admin", "group-rep", "member"],
+      enum: ["admin", "group-rep", "member", "lecturer"],
       default: "member",
     },
   },
@@ -188,6 +188,7 @@ userSchema.methods.generateAuthToken = function (): string {
       lastName: this.lastName,
       email: this.email,
       role: this.role,
+      schoolId: this.schoolId,
     },
     process.env.JWT_SECRET,
     {

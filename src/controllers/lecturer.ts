@@ -33,11 +33,11 @@ export const addLecturer = async (
     const lastName = names[1];
     const schoolId = (req as IRequestWithUser).user.schoolId;
 
-    if (!name || !gender) {
+    if (!firstName || !lastName || !gender) {
       _res.error(
         400,
         res,
-        "Invalid data input - lecturer name and gender fields are required"
+        "Invalid data input - lecturer fullname and gender fields are required"
       );
       return;
     }
@@ -45,7 +45,7 @@ export const addLecturer = async (
     const existingLecturer = await Lecturer.findOne({ email });
 
     if (existingLecturer) {
-      _res.error(400, res, "A lecturer with this name already exists");
+      _res.error(400, res, "A lecturer with this email already exists");
       return;
     }
 

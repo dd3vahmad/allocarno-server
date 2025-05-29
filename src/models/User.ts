@@ -26,6 +26,7 @@ export interface IUser extends Document {
   gender: "male" | "female";
   role?: "admin" | "group-rep" | "member";
   emailVerified?: boolean;
+  schoolId: string;
   lastSignInAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -65,6 +66,10 @@ const userSchema = new Schema<IUser>(
       type: String,
     },
     cloudinaryId: {
+      type: String,
+      default: null,
+    },
+    schoolId: {
       type: String,
       default: null,
     },

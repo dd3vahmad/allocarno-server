@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { _res } from "../lib/utils";
 import User, { IUser } from "../models/User";
 import { IRequestWithUser } from "../lib/interface";
+import School from "../models/School";
 
 const attachJWT = (user: IUser, res: Response) => {
   const token = user.generateAuthToken();
@@ -47,15 +48,40 @@ export const signup = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, password, firstName, lastName, role, gender } = req.body;
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    role,
+    gender,
+    name,
+    motto,
+    address,
+    phone,
+  } = req.body;
 
   try {
-    const existingUserEmail = await User.findOne({ email });
+    const existingSchoolWithEmail = await School.findOne({ email });
+    if (existingSchoolWithEmail) {
+      _res.error(400, res, "Email has already been used");
+      return;
+    }
 
+    const school = await School.create({
+      name,
+      email,
+      address,
+      phone,
+      motto,
+    });
+
+    const existingUserEmail = await User.findOne({ email });
     if (existingUserEmail) {
       _res.error(400, res, "Email has already been used");
       return;
     }
+
     const user = await User.create({
       email,
       password,
@@ -63,6 +89,7 @@ export const signup = async (
       lastName,
       role,
       gender,
+      schoolId: school._id,
     });
 
     attachJWT(user, res);

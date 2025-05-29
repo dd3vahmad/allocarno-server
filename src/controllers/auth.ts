@@ -59,6 +59,7 @@ export const signup = async (
     motto,
     address,
     phone,
+    category,
   } = req.body;
 
   try {
@@ -74,6 +75,7 @@ export const signup = async (
       address,
       phone,
       motto,
+      category,
     });
 
     const existingUserEmail = await User.findOne({ email });

@@ -5,6 +5,48 @@ import { _res, getAvailableHallsAndTimes, saveAiSchedules } from "../lib/utils";
 import { IRequestWithUser, IScheduleInput } from "../lib/interface";
 import DraftScheduledCourse from "../models/DraftSchedule";
 
+export const getTimetables = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const timetable = await Timetable.find({
+      schoolId: (req as IRequestWithUser).user.schoolId,
+    });
+
+    if (!timetable) {
+      _res.error(404, res, "Timetable not found");
+      return;
+    }
+
+    _res.success(200, res, "Timetable fetched successfully", timetable);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTimetable = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const timetable = await Timetable.findOne({
+      schoolId: (req as IRequestWithUser).user.schoolId,
+    });
+
+    if (!timetable) {
+      _res.error(404, res, "Timetable not found");
+      return;
+    }
+
+    _res.success(200, res, "Timetable fetched successfully", timetable);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createTimetable = async (
   req: Request,
   res: Response,

@@ -11,7 +11,7 @@ const attachJWT = (user: IUser, res: Response) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: false, // mitigates XSS attacks
     sameSite: "None", // mitigates CSRF attacks
-    secure: process.env.NODE_ENV !== "development" ? false : false,
+    secure: process.env.NODE_ENV !== "development" ? true : false,
   });
 };
 

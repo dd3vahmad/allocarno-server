@@ -10,7 +10,7 @@ const attachJWT = (user: IUser, res: Response) => {
   res.cookie("x-auth-token", token, {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: false, // mitigates XSS attacks
-    sameSite: false, // mitigates CSRF attacks
+    sameSite: "None", // mitigates CSRF attacks
     secure: process.env.NODE_ENV !== "development" ? false : false,
   });
 };

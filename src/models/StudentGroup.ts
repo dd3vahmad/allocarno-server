@@ -10,7 +10,6 @@ const studentGroupSchema = new Schema<IStudentGroup>({
   name: { type: String, required: true },
   shortName: {
     type: String,
-    unique: true,
     required: true,
   },
   schoolId: { type: String, ref: "School", required: true },
